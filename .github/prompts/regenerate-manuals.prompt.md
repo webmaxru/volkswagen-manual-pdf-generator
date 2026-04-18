@@ -1,5 +1,5 @@
 ---
-description: Regenerate the VW ID.4 PDF manuals for every language that already has a subfolder under manual/.
+description: Regenerate the VW PDF manuals for every language that already has a subfolder under manual/ (currently the VW ID.4 example set).
 ---
 
 # Regenerate existing manuals

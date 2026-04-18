@@ -1,5 +1,9 @@
 // Fetch full manual (topictree + topics + stylesheet + figures) via Playwright and emit a single HTML file + PDF.
-// Usage: node fetch_manual.js [--lang nb] [--partNumber 11A012777AR] [--brandPattern WVW] [--out manual/nb/ID4_Instruksjonsbok_nb]
+// Works for any Volkswagen model whose digital manual is published on volkswagen.no — pass the
+// car's part number via --partNumber and override --brand / --model to control the output filename.
+// Usage: node fetch_manual.js [--lang nb] [--partNumber 11A012777AR] [--brandPattern WVW] \
+//                             [--brand volkswagen] [--model id.4] [--out manual/nb/<basename>]
+// Defaults below describe a Norwegian VW ID.4 / ID.4 GTX as a working example.
 
 const { chromium } = require('playwright');
 const sharp = require('sharp');
@@ -13,10 +17,11 @@ function arg(name, def) {
   return i >= 0 ? process.argv[i + 1] : def;
 }
 
+// Defaults match a Norwegian VW ID.4 / ID.4 GTX. Override via CLI for any other model.
 const PART = arg('partNumber', '11A012777AR');
 const BRAND = arg('brandPattern', 'WVW');
-const BRAND_NAME = arg('brand', 'volkswagen');   // Used only for the output filename.
-const MODEL_NAME = arg('model', 'id.4');         // Used only for the output filename.
+const BRAND_NAME = arg('brand', 'volkswagen');   // Used only for the output filename and cover page.
+const MODEL_NAME = arg('model', 'id.4');         // Used only for the output filename and cover page.
 const LANG_SHORT = arg('lang', 'nb');        // BCP-47 short, e.g. nb, en, de, sv, fi, fr, es, it, nl, pl, cs, sk, hu, pt, da, ro, bg, el, tr, ru, uk, sr, hr, sl, et, lt, lv, ar, he, ko, ja, zh ...
 const MARKET = arg('market', 'NO');          // ISO country used on VW portal
 const REGION = arg('region', 'RDW');         // region for consumer token
@@ -32,7 +37,7 @@ const CONCURRENCY = parseInt(arg('concurrency', '8'), 10);
 const JPEG_QUALITY = parseInt(arg('jpegQuality', '80'), 10);
 const JPEG_MAX_WIDTH = parseInt(arg('jpegMaxWidth', '1600'), 10);
 
-// Hard rule: this project only documents the Norwegian-market ID.4. Always scrape from volkswagen.no
+// Hard rule: this project only scrapes from the Norwegian-market portal. Always scrape from volkswagen.no
 // — every language is served from the same RDW backend regardless of landing, so there is no reason
 // to point at any other VW national portal. Refusing here keeps future runs honest.
 {
@@ -250,7 +255,10 @@ function log(...a) { console.log('[fetch]', ...a); }
   // Step 3: build composite HTML
   log('Composing HTML...');
   const lang = LANG_SHORT;
-  const title = `Volkswagen ID.4 — ${bundle.ownersManualTitle}${bundle.editionVersion ? ' (' + bundle.editionVersion + ')' : ''}`;
+  const displayBrand = (BRAND_NAME || '').replace(/\b\w/g, c => c.toUpperCase());
+  const displayModel = (MODEL_NAME || '').toUpperCase();
+  const vehicleLabel = [displayBrand, displayModel].filter(Boolean).join(' ');
+  const title = `${vehicleLabel} — ${bundle.ownersManualTitle}${bundle.editionVersion ? ' (' + bundle.editionVersion + ')' : ''}`;
 
   function tocHtml(node, depth = 0) {
     if (!node) return '';
@@ -324,7 +332,7 @@ function log(...a) { console.log('[fetch]', ...a); }
 <body>
   <section class="dm-cover">
     <h1>${escapeHtml(title)}</h1>
-    <p>${escapeHtml(bundle.modelName || 'ID.4')}</p>
+    <p>${escapeHtml(bundle.modelName || vehicleLabel)}</p>
     <p>${escapeHtml(bundle.editionVersion || '')}</p>
     <p>Part number: ${escapeHtml(PART)} · Brand: ${escapeHtml(BRAND)} · Language: ${escapeHtml(lang)}</p>
     <p style="margin-top:10mm;color:#888;font-size:9pt">Scraped from volkswagen.no Digital Manual (DIMA). Source URL:<br/>

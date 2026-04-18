@@ -1,7 +1,7 @@
 {
-  "name": "id.4",
+  "name": "vw-digital-manual",
   "version": "1.0.0",
-  "description": "",
+  "description": "Generate a single searchable PDF of any Volkswagen Digital Manual (DIMA) published on volkswagen.no. Defaults to the VW ID.4 as a working example; any VW model can be targeted by passing --partNumber.",
   "main": "index.js",
   "scripts": {
     "fetch": "node fetch_manual.js",
