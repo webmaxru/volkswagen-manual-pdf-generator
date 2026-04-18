@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Generated manuals — keep the final PDFs (they're the deliverable),
+# drop scratch artifacts (raw API JSON + composite HTML used during a run).
+manual/**/*.json
+manual/**/*.html
+# Defense in depth: never commit any HTML anywhere
+*.html
+
+# Reverse-engineering scratch captures (contain VW's proprietary JS bundle and API responses — regenerate locally with `node discover.js`)
+discover_out/
+probe_out/
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# Python bytecode (optimize_pdf.py is the only Python in the repo)
+__pycache__/
+*.pyc

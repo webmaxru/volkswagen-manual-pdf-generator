@@ -1,0 +1,21 @@
+{
+  "name": "id.4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "fetch": "node fetch_manual.js",
+    "fetch:nb": "node fetch_manual.js --lang nb --market NO --locale nb-NO --ownersManualTerm Instruksjonsbok --landing https://www.volkswagen.no/no/min-volkswagen/digital-instruksjonsbok-innhold.html",
+    "fetch:en": "node fetch_manual.js --lang en --market GB --locale en-GB --ownersManualTerm \"Owner's Manual\" --landing https://www.volkswagen.no/no/min-volkswagen/digital-instruksjonsbok-innhold.html",
+    "fetch:de": "node fetch_manual.js --lang de --market DE --locale de-DE --ownersManualTerm Betriebsanleitung --landing https://www.volkswagen.no/no/min-volkswagen/digital-instruksjonsbok-innhold.html",
+    "fetch:ru": "node fetch_manual.js --lang ru --market RU --locale ru-RU --ownersManualTerm \"Руководство по эксплуатации\" --landing https://www.volkswagen.no/no/min-volkswagen/digital-instruksjonsbok-innhold.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "playwright": "^1.59.1",
+    "sharp": "^0.34.5"
+  }
+}
